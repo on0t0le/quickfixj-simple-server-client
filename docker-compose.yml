@@ -5,10 +5,7 @@ services:
     build:
       context: ./simple-server/.
       dockerfile: ./Dockerfile
-    # environment:
-    #   QUICKFIXJ_SERVER_CONFIG_FILE: "file:/opt/app/quickfixj-server.cfg"
     volumes:
-      # - ./configs/quickfixj-server.cfg:/opt/app/quickfixj-server.cfg
       - server-logs:/tmp/logs
       - server-data:/opt/app/target/data/executor
     networks:
@@ -18,10 +15,7 @@ services:
     build:
       context:  ./simple-client/.
       dockerfile: ./Dockerfile
-    # environment:
-    #   QUIICKFIXJ_CLIENT_CONFIG_FILE: "file:/opt/app/quickfixj-client.cfg"
     volumes:
-      # - ./configs/quickfixj-client.cfg:/opt/app/quickfixj-client.cfg
       - client-logs:/tmp/logs
       - client-data:/opt/app/target/data/banzai
     networks:

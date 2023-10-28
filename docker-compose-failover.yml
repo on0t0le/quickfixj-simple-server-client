@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  server-1:
+    build:
+      context: ./simple-server/.
+      dockerfile: ./Dockerfile
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
+      QUICKFIXJ_SERVER_CONFIG_FILE: "file:/opt/app/quickfixj-server.cfg"
+    volumes:
+      - ./configs/quickfixj-server.cfg:/opt/app/quickfixj-server.cfg
+      - server-1-logs:/tmp/logs
+      - server-1-data:/opt/app/target/data/executor
+    networks:
+      - net
+    # healthcheck:
+    #   test: "netstat -nl | grep -q 9881"
+    #   interval: 6s
+    #   timeout: 3s
+    #   retries: 10
+
+  server-2:
+    build:
+      context: ./simple-server/.
+      dockerfile: ./Dockerfile
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
+      QUICKFIXJ_SERVER_CONFIG_FILE: "file:/opt/app/quickfixj-server.cfg"
+    volumes:
+      - ./configs/quickfixj-server.cfg:/opt/app/quickfixj-server.cfg
+      - server-2-logs:/tmp/logs
+      - server-2-data:/opt/app/target/data/executor
+    networks:
+      - net
+    # healthcheck:
+    #   test: "netstat -nl | grep -q 9881"
+    #   interval: 6s
+    #   timeout: 3s
+    #   retries: 10
+
+  client:
+    build:
+      context:  ./simple-client/.
+      dockerfile: ./Dockerfile
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -Xmx512m -Xms512m"
+      QUIICKFIXJ_CLIENT_CONFIG_FILE: "file:/opt/app/quickfixj-client.cfg"
+    volumes:
+      - ./configs/quickfixj-client.cfg:/opt/app/quickfixj-client.cfg
+      - client-logs:/tmp/logs
+      - client-data:/opt/app/target/data/banzai
+    networks:
+      - net
+
+volumes:
+  server-1-logs:
+  server-1-data:
+  server-2-logs:
+  server-2-data:
+  client-logs:
+  client-data:
+
+networks:
+  net:
